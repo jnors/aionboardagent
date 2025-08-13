@@ -51,7 +51,7 @@ Designed for modern, distributed teams that need a scalable, always-available di
 
 - **Language**: Python 3.10+
 - **AI Framework**: LangChain or CrewAI
-- **LLM Provider**: OpenAI (GPT-4 or GPT-3.5)
+- **LLM Provider**: OpenAI
 - **Vector DB**: FAISS or Pinecone
 - **UI**: Slack Bot (via Bolt or Flask) or Streamlit (optional)
 - **Scheduler**: Google Calendar API or Microsoft Graph

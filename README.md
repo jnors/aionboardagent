@@ -104,6 +104,15 @@ ai-onboarding-agent/
 ## 📸 Demo (Coming Soon)
 
 ## 🗺️ Roadmap
+- [X] Document RAG integration
+
+- [ ] Slack or Streamlit interface
+
+- [ ] Calendar scheduling integration
+
+- [ ] Add memory or history tracking
+
+- [ ] Deployment (Streamlit Cloud or Hugging Face Spaces)
 
 ## 🧑‍💻 Author
 João Silva

@@ -37,8 +37,7 @@ Designed for modern, distributed teams that need a scalable, always-available di
 
 [User Input]
 ↓
-[GuideAgent] → [DocSearchAgent] (FAISS/Pinecone + Docs)
-↘ [SchedulerAgent] (Google/Outlook API)
+[GuideAgent] → [DocSearchAgent] (FAISS/Pinecone + Docs) -> [SchedulerAgent] (Google/Outlook API)
 
 - **GuideAgent**: Handles initial queries, routes to other agents
 - **DocSearchAgent**: RAG over onboarding documentation
@@ -64,3 +63,51 @@ Designed for modern, distributed teams that need a scalable, always-available di
 ```bash
 git clone https://github.com/your-username/ai-onboarding-agent.git
 cd ai-onboarding-agent
+```
+
+### 2. Set Up Environment
+```
+python -m venv venv
+source venv/bin/activate  # or venv\Scripts\activate on Windows
+pip install -r requirements.txt
+cp .env.example .env  # Fill in your API keys and config
+```
+
+### 3. Embed Onboarding Docs
+* Place your documents (PDF, Notion exports, markdown) into /data/docs
+* Run the embedding script (coming soon) to populate the vector store
+
+### 4. Run the App
+```
+streamlit run app.py
+# OR
+python app.py  # if using FastAPI
+```
+
+## 📂 Project Structure
+```
+ai-onboarding-agent/
+├── app.py
+├── .env.example
+├── /agents
+│   ├── guide_agent.py
+│   ├── doc_search_agent.py
+│   ├── scheduler_agent.py
+├── /data
+│   ├── docs/
+│   └── embeddings/
+├── utils.py
+├── requirements.txt
+└── README.md
+```
+
+## 📸 Demo (Coming Soon)
+
+## 🗺️ Roadmap
+
+## 🧑‍💻 Author
+João Silva
+[LinkedIn](https://linkedin.com/in/jnorsilva) | [Substack](https://wirelessinthemaking.substack.com) | [joaogpt](https://chatgpt.com/g/g-6887987cc5a08191a3f54d021112e713-joaogpt)
+
+## 📄 License
+MIT License. Use, fork, improve — and don’t forget to give credit if this helped!

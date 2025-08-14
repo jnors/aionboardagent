@@ -1,14 +1,18 @@
+# doc_search_agent.py
+
+import os
+import streamlit as st
 from langchain.prompts import PromptTemplate
 from langchain.chains import RetrievalQA
 from langchain_openai import ChatOpenAI
+from langchain_google_genai import ChatGoogleGenerativeAI  # Import Google's model
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_community.vectorstores import FAISS
-import os
 
 from dotenv import load_dotenv
 load_dotenv()
 
-# Main QA prompt
+# Main QA prompt (no changes needed here)
 custom_prompt = PromptTemplate(
     input_variables=["context", "question"],
     template="""
@@ -40,32 +44,56 @@ def search_documents(query: str):
     index = FAISS.load_local("data/embeddings", embeddings, allow_dangerous_deserialization=True)
     retriever = index.as_retriever(search_kwargs={"k": 3})
 
-    # Main LLM for answering
-    llm = ChatOpenAI(
-        model="openai/gpt-oss-20b:free",
+    # --- LLM Definitions with Fallback ---
+
+    # 1. Primary LLM (OpenRouter)
+    primary_llm = ChatOpenAI(
+        model="openai/gpt-3.5-turbo", # Example model
         openai_api_base="https://openrouter.ai/api/v1",
         openai_api_key=os.getenv("OPENROUTER_API_KEY"),
         temperature=0.25
     )
 
-    qa = RetrievalQA.from_chain_type(
-        llm=llm,
-        retriever=retriever,
-        return_source_documents=True
+    # 2. Fallback LLM (Google Gemini)
+    fallback_llm = ChatGoogleGenerativeAI(
+        model="gemini-pro",
+        google_api_key=os.getenv("GOOGLE_API_KEY"),
+        temperature=0.25,
+        convert_system_message_to_human=True # Helps with compatibility
     )
+    
+    # --- Main QA Chain ---
+    try:
+        print("Attempting to use primary LLM (OpenRouter)...")
+        qa_chain = RetrievalQA.from_chain_type(
+            llm=primary_llm,
+            retriever=retriever,
+            return_source_documents=True
+        )
+        result = qa_chain.invoke(query)
 
-    result = qa.invoke(query)
+    except Exception as e:
+        # If a rate limit error occurs, fall back to Gemini
+        if "429" in str(e):
+            print("Primary LLM failed (429). Switching to fallback LLM (Gemini)...")
+            st.warning("OpenRouter daily limit reached. Switching to Google Gemini for this request.", icon="⚠️")
+            
+            qa_chain = RetrievalQA.from_chain_type(
+                llm=fallback_llm,
+                retriever=retriever,
+                return_source_documents=True,
+                # Pass the custom prompt to the chain
+                chain_type_kwargs={"prompt": custom_prompt}
+            )
+            result = qa_chain.invoke(query)
+        else:
+            # For any other error, re-raise it
+            raise e
+
     answer = result["result"]
     sources = result["source_documents"]
 
-    # Generate related questions
-    small_llm = ChatOpenAI(
-        model="mistralai/mistral-7b-instruct:free",
-        openai_api_base="https://openrouter.ai/api/v1",
-        openai_api_key=os.getenv("OPENROUTER_API_KEY"),
-        temperature=0.5
-    )
-
+    # --- Related Questions Generation ---
     related_prompt = f"""
 Based on the user's question and your answer, suggest 3 short follow-up questions
 that the user might ask next. Each question should be concise and directly related.
@@ -75,11 +103,23 @@ Your answer: {answer}
 
 Return the questions as a numbered list.
 """
-    related_raw = small_llm.invoke(related_prompt).content
+    
+    try:
+        print("Attempting to generate related questions with primary LLM...")
+        # Use the primary LLM for related questions as well
+        related_raw = primary_llm.invoke(related_prompt).content
+    except Exception as e:
+         if "429" in str(e):
+            print("Primary LLM failed for related questions (429). Using fallback...")
+            # If it fails, use the fallback LLM
+            related_raw = fallback_llm.invoke(related_prompt).content
+         else:
+             raise e
+
     related_list = [line.strip("1234567890. ") for line in related_raw.split("\n") if line.strip()]
 
     return {
         "answer": answer,
         "sources": sources,
-        "related": related_list[:3]  # limit to 3
+        "related": related_list[:3]
     }

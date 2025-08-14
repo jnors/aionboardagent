@@ -49,11 +49,11 @@ Designed for modern, distributed teams that need a scalable, always-available di
 ## 🛠️ Tech Stack
 
 - **Language**: Python 3.10+
-- **AI Framework**: LangChain or CrewAI
-- **LLM Provider**: OpenAI
-- **Vector DB**: FAISS or Pinecone
-- **UI**: Slack Bot (via Bolt or Flask) or Streamlit (optional)
-- **Scheduler**: Google Calendar API or Microsoft Graph
+- **AI Framework**: LangChain
+- **LLM Provider**: OpenRouter + Google Gemini
+- **Vector DB**: FAISS
+- **UI**: Slack Bot (via Bolt or Flask - To Be Done) or Streamlit
+- **Scheduler**: Google Calendar API or Microsoft Graph (To Be Done)
 
 ---
 
@@ -89,13 +89,13 @@ python app.py  # if using FastAPI
 
 ## 📸 Demo (Coming Soon)
 
-
+![Streamlit Screenshot](img\screenshots\Screenshot.png "The Onboarding AI Agent")
 
 
 ## 🗺️ Roadmap
 - [X] Document RAG integration
 
-- [ ] Slack or Streamlit interface
+- [X] Slack or Streamlit interface
 
 - [ ] Calendar scheduling integration
 

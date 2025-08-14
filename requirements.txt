@@ -1,0 +1,15 @@
+langchain
+langchain-community
+langchain-huggingface
+langchain-openai
+openai
+requests
+python-dotenv
+streamlit
+faiss-cpu
+sentence-transformers
+unstructured[pdf]
+pdfminer.six
+python-docx 
+beautifulsoup4
+markdown

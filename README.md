@@ -75,7 +75,10 @@ cp .env.example .env  # Fill in your API keys and config
 
 ### 3. Embed Onboarding Docs
 * Place your documents (PDF, Notion exports, markdown) into /data/docs
-* Run the embedding script (coming soon) to populate the vector store
+* Run the embedding script to populate the vector store
+```
+python load_docs.py
+```
 
 ### 4. Run the App
 ```
@@ -84,24 +87,10 @@ streamlit run app.py
 python app.py  # if using FastAPI
 ```
 
-## 📂 Project Structure
-```
-ai-onboarding-agent/
-├── app.py
-├── .env.example
-├── /agents
-│   ├── guide_agent.py
-│   ├── doc_search_agent.py
-│   ├── scheduler_agent.py
-├── /data
-│   ├── docs/
-│   └── embeddings/
-├── utils.py
-├── requirements.txt
-└── README.md
-```
-
 ## 📸 Demo (Coming Soon)
+
+
+
 
 ## 🗺️ Roadmap
 - [X] Document RAG integration

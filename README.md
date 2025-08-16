@@ -89,7 +89,7 @@ python app.py  # if using FastAPI
 
 ## 📸 Demo (Coming Soon)
 
-![Streamlit Screenshot](img\screenshots\Screenshot.png "The Onboarding AI Agent")
+![Streamlit Screenshot](./img/screenshots/Screenshot.png "The Onboarding AI Agent")
 
 
 ## 🗺️ Roadmap
